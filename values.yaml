@@ -1,0 +1,35 @@
+gatewayClass:
+  enabled: true
+  controllerName: "gateway.envoyproxy.io/gatewayclass-controller"
+
+gateway:
+  enabled: true
+  # Annotations for the Gateway resource
+  # Use this for cert-manager integration:
+  # annotations:
+  #   cert-manager.io/cluster-issuer: letsencrypt-prod
+  annotations: {}
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: my-tls-secret
+        mode: Terminate
+
+HTTPToHTTPSRedirectFilter:
+  enabled: true
+  gatewayHTTPListenerName: http
+  redirectStatusCode: 301

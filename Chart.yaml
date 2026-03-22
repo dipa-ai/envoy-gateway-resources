@@ -1,0 +1,4 @@
+apiVersion: v2
+name: envoy-gateway
+description: A Helm chart for managing Envoy Gateway resources
+version: 0.1.0
