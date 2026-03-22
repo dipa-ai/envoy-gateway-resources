@@ -1,0 +1,36 @@
+name: Push Helm chart
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  helm-chart:
+    runs-on: ubuntu-latest
+    env:
+      CHART_VERSION: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Login to Harbor OCI registry
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | helm registry login ${{ vars.DOCKER_REGISTRY }} \
+            --username ${{ secrets.DOCKER_USERNAME }} \
+            --password-stdin
+
+      - name: Package Helm chart
+        run: |
+          helm package . \
+            --version "${CHART_VERSION#v}" \
+            --app-version "${CHART_VERSION}"
+
+      - name: Push Helm chart to OCI registry
+        run: helm push envoy-gateway-${CHART_VERSION#v}.tgz oci://${{ vars.DOCKER_REGISTRY }}/59508-197526-76-infra/charts
