@@ -12,7 +12,9 @@ A Helm chart for managing Envoy Gateway resources: GatewayClass, Gateway, and HT
 ## Installation
 
 ```bash
-helm install envoy-gateway . -n envoy-gateway --create-namespace
+helm install envoy-gateway oci://ghcr.io/dipa-ai/charts/envoy-gateway \
+  --version 0.1.2 \
+  -n envoy-gateway --create-namespace
 ```
 
 ## Configuration
@@ -80,8 +82,8 @@ gateway:
 You can deploy multiple independent Gateways (e.g. external and internal) by installing the chart multiple times with different release names:
 
 ```bash
-helm install external . -n envoy-gateway -f values-external.yaml
-helm install internal . -n envoy-gateway -f values-internal.yaml
+helm install external oci://ghcr.io/dipa-ai/charts/envoy-gateway -n envoy-gateway -f values-external.yaml
+helm install internal oci://ghcr.io/dipa-ai/charts/envoy-gateway -n envoy-gateway -f values-internal.yaml
 ```
 
 Each release will create its own GatewayClass and Gateway with a unique name derived from the release name.
